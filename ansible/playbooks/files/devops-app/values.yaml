@@ -1,0 +1,21 @@
+replicaCount: 1
+
+image:
+  repository: janssenlima/projeto-devops
+  pullPolicy: IfNotPresent
+  tag: "1.0"
+
+
+service:
+  name: python-logs-devops
+  type: ClusterIP
+  port: 80
+  targetPort: 5000
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 64Mi

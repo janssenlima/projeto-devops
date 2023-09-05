@@ -1,0 +1,3 @@
+config:
+  clients:
+    - url: http://devops-loki-loki-distributed-gateway.grafana-loki.svc.cluster.local/loki/api/v1/push

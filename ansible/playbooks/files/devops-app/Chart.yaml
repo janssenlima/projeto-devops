@@ -1,0 +1,9 @@
+apiVersion: v2
+name: devops-logs
+description: Helm chart para a aplicação do Projeto DevOps
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+maintainers:
+  - name: Janssen Lima
+    email: janssenreislima@gmail.com

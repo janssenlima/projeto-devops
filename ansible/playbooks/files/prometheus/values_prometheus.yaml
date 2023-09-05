@@ -1,0 +1,24 @@
+grafana:
+  enabled: false
+
+alertmanager:
+  enabled: false
+
+kubeEtcd:
+  enabled: false
+
+kubeApiServer:
+  enabled: false
+
+kubelet:
+  serviceMonitor:
+    cAdvisorMetricRelabelings:
+    - sourceLabels: [__name__]
+      separator: ;
+      regex: "container_(tasks_state|memory_fail.*)"
+      action: drop
+    metricRelabelings:
+    - sourceLabels: [__name__]
+      separator: ;
+      regex: (storage_operation.+|kubelet.+|)
+      action: drop

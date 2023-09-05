@@ -1,0 +1,110 @@
+---
+- hosts: '{{ host }}'
+  gather_facts: false
+  collections:
+  - kubernetes.core
+  
+  pre_tasks:
+
+  - name: "Instalando pacotes necessários"
+    pip:
+      name:
+        - pyyaml
+        - kubernetes
+        - openshift
+      state: present
+
+  tasks:
+
+  - name: "Copiando arquivo values para o deploy do grafana"
+    copy:
+      src: files/grafana/values_grafana.yaml
+      dest: /tmp/values_grafana.yaml
+  
+  - name: "Copiando arquivo values para o deploy do prometheus"
+    copy:
+      src: files/prometheus/values_prometheus.yaml
+      dest: /tmp/values_prometheus.yaml
+
+  - name: "Copiando arquivo values para o deploy do promtail"
+    copy:
+      src: files/promtail/values_promtail.yaml
+      dest: /tmp/values_promtail.yaml
+
+  - name: "Copiando diretório do chart do App Python"
+    copy:
+      src: files/devops-app/
+      dest: /tmp/devops-app/
+
+  - name: Deploy Jenkins
+    helm:
+      release_name: devops-jenkins
+      chart_repo_url: "https://charts.jenkins.io"
+      chart_ref: jenkins
+      release_namespace: cicd
+      release_state: present
+      create_namespace: true
+  
+  - name: Deploy Prometheus
+    helm:
+      release_name: devops-prometheus
+      chart_repo_url: https://prometheus-community.github.io/helm-charts
+      chart_ref: kube-prometheus-stack
+      create_namespace: true
+      release_namespace: monitoring
+      release_state: absent
+      values_files:
+        - /tmp/values_prometheus.yaml
+
+  - name: Deploy Grafana Dashboard
+    helm:
+      release_name: devops-grafana
+      chart_repo_url: https://grafana.github.io/helm-charts
+      chart_ref: grafana
+      create_namespace: true
+      release_namespace: monitoring
+      release_state: absent
+      values_files:
+        - /tmp/values_grafana.yaml
+  
+  - name: Deploy Loki
+    helm:
+      release_name: devops-loki
+      chart_repo_url: https://grafana.github.io/helm-charts
+      chart_ref:  loki-distributed
+      create_namespace: true
+      release_namespace: grafana-loki
+      release_state: absent
+
+  - name: Deploy Promtail
+    helm:
+      release_name: devops-promtail
+      chart_repo_url: https://grafana.github.io/helm-charts
+      chart_ref:  promtail
+      create_namespace: true
+      release_namespace: grafana-loki
+      release_state: absent
+      values_files:
+        - /tmp/values_promtail.yaml
+
+  - name: Criando namespace do App Python
+    k8s:
+      name: devops-logs
+      api_version: v1
+      kind: Namespace
+      state: present
+
+  - name: Deploy App Python
+    command: helm upgrade --install devops-logs /tmp/devops-app
+  
+  post_tasks:
+   
+  - name: "Excluindo arquivos usados no deploy da stack"
+    file:       
+      path: "{{ item }}"     
+      state: absent  
+    with_items:   
+    - /tmp/values_grafana.yaml
+    - /tmp/values_prometheus.yaml
+    - /tmp/values_promtail.yaml
+    - /tmp/devops-app/
