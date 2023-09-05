@@ -2,3 +2,5 @@
 *.tfstate
 *.lock.hcl
 **/.terraform/*
+*devops-config
+*kindcluster-config
