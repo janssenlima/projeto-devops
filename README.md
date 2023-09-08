@@ -66,7 +66,7 @@ Obs.: Por padrão, este laboratório está rodando apenas com o nó no cluster. 
 
 Com o cluster em execução, podemos aplicar o deploy das stacks.
 
-Para garantir o funcionamento do ansible para este laboratório, podemos executar os seguintes comandos:
+Para garantir o funcionamento do ansible para este laboratório, podemos executar os seguintes comandos dentro do diretório ```ansible```:
 
 `ansible-inventory --list -y`
 
