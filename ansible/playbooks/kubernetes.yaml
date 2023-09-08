@@ -47,7 +47,7 @@
       chart_ref: kube-prometheus-stack
       create_namespace: true
       release_namespace: monitoring
-      release_state: absent
+      release_state: present
       values_files:
         - /tmp/values_prometheus.yaml
 
@@ -58,7 +58,7 @@
       chart_ref: grafana
       create_namespace: true
       release_namespace: monitoring
-      release_state: absent
+      release_state: present
       values_files:
         - /tmp/values_grafana.yaml
   
@@ -69,7 +69,7 @@
       chart_ref:  loki-distributed
       create_namespace: true
       release_namespace: grafana-loki
-      release_state: absent
+      release_state: present
 
   - name: Deploy Promtail
     helm:
@@ -78,7 +78,7 @@
       chart_ref:  promtail
       create_namespace: true
       release_namespace: grafana-loki
-      release_state: absent
+      release_state: present
       values_files:
         - /tmp/values_promtail.yaml
 
