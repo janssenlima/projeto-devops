@@ -13,7 +13,7 @@ plan: ## Executa o planejamento de execução do Terraform
 	terraform plan
 
 .PHONY: up
-up: ## Inicializa o cluster Kubernetes rodando em ambiente local usando Docker
+up: ## Provisiona o cluster Kubernetes em ambiente local usando Docker
 	terraform apply -auto-approve
 
 .PHONY: down
