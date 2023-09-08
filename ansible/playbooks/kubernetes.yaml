@@ -31,20 +31,15 @@
       src: files/promtail/values_promtail.yaml
       dest: /tmp/values_promtail.yaml
 
-  - name: "Copiando diretório do chart do App Python"
-    copy:
-      src: files/devops-app/
-      dest: /tmp/devops-app/
-
-  - name: Deploy Jenkins
+  - name: Deploy Argo-CD
     helm:
-      release_name: devops-jenkins
-      chart_repo_url: "https://charts.jenkins.io"
-      chart_ref: jenkins
-      release_namespace: cicd
+      release_name: devops-argocd
+      chart_repo_url: "https://argoproj.github.io/argo-helm"
+      chart_ref: argo-cd
+      release_namespace: argo-cd
       release_state: present
       create_namespace: true
-  
+
   - name: Deploy Prometheus
     helm:
       release_name: devops-prometheus
@@ -93,9 +88,6 @@
       api_version: v1
       kind: Namespace
       state: present
-
-  - name: Deploy App Python
-    command: helm upgrade --install devops-logs /tmp/devops-app
   
   post_tasks:
    
