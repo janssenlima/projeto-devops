@@ -16,49 +16,69 @@ Repositório do desafio para criar uma pipeline CI/CD que constrói, testa e imp
 # Como rodar o Projeto DevOps:
 Clone este repositório
 
-`git clone https://github.com/janssenlima/projeto-devops.git`
+```
+git clone https://github.com/janssenlima/projeto-devops.git
+```
 
 ## Preparação do ambiente
 ### Gerar a chave SSH
-`ssh-keygen -t rsa`
+```
+ssh-keygen -t rsa
+```
 
-`cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys`
+```
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+```
 
 Edite o arquivo ```dev``` dentro do diretório ```ansible``` e altere o parâmetro ```ansible_ssh_user``` para o usuário que você estiver logado no sistema.
 
 Execute os comandos abaixos para instalar as collections para serem usadas no playbook do Ansible:
 
-`ansible-galaxy collection install kubernetes.core`
+```
+ansible-galaxy collection install kubernetes.core
+```
 
-`ansible-galaxy collection install community.kubernetes`
+```
+ansible-galaxy collection install community.kubernetes
+```
 
 # Subir o cluster Kubernetes
 
-`cd cluster`
+```
+cd cluster
+```
 
 Para facilitar o provisionamento do cluster, o comando make pode ser usado para verificar as opções.
 
-`make`
+```
+make
+```
 
 Por exemplo, para provisionar o cluster, execute:
 
-`make init`
+```
+make init
 
-`make plan`
+make plan
 
-`make up`
+make up
+```
 
 Você também pode utilizar os comandos do terraform, caso o pacote make não esteja instalado no seu sistema.
 
-`terraform init`
+```
+terraform init
 
-`terraform plan`
+terraform plan
 
-`terraform apply`
+terraform apply
+```
 
 Verifique se o cluster está pronto com o comando:
 
-`kubectl get node`
+```
+kubectl get node
+```
 
 Obs.: Por padrão, este laboratório está rodando apenas com o nó no cluster. Se você desejar incluir mais nós (workers node), altera o arquivo ```cluster/main.tf```. Neste arquivo eu deixei um exemplo comentado.
 
@@ -68,11 +88,15 @@ Com o cluster em execução, podemos aplicar o deploy das stacks.
 
 Para garantir o funcionamento do ansible para este laboratório, podemos executar os seguintes comandos dentro do diretório ```ansible```:
 
-`ansible-inventory --list -y`
+```
+ansible-inventory --list -y
+```
 
 Este comando irá retornar com o host ```devops```, que está configurado no arquivo ```dev``` dentro do diretório ```ansible```.
 
-```ansible all -m ping -u <seu_usuário>```
+```
+ansible all -m ping -u <seu_usuário>
+```
 
 Este comando deverá retornar o status ```SUCCESS```
 
@@ -80,7 +104,9 @@ Com o sucesso na execução dos comandos acima, podemos prosseguir com o deploy 
 
 Para isso, na raiz do projeto entre no diretório ansible e execute o seguinte comando:
 
-`ansible-playbook playbooks/kubernetes.yaml -e host=devops`
+```
+ansible-playbook playbooks/kubernetes.yaml -e host=devops
+```
 
 Este comando irá fazer o deploy das seguintes ferramentas:
 - Prometheus
@@ -98,9 +124,11 @@ Com a execução do Playbook do Ansible, teremos acesso as seguintes interfaces:
 
 O acesso ao Grafana é realizado acessando a URL http://localhost:3000. Antes, precisamos expor a aplicação com o seguintes comandos:
 
-`export POD_NAME=$(kubectl get pods --namespace monitoring -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=devops-grafana" -o jsonpath="{.items[0].metadata.name}")`
+```
+export POD_NAME=$(kubectl get pods --namespace monitoring -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=devops-grafana" -o jsonpath="{.items[0].metadata.name}")
 
-`kubectl --namespace monitoring port-forward $POD_NAME 3000`
+kubectl --namespace monitoring port-forward $POD_NAME 3000
+```
 
 Para esse ambiente de laboratório, o Grafana está habilitado para fazer login automaticamente sem a necessidade de entrar com usuário e senha. Também já configura os datasources para Prometheus e Loki.
 
@@ -108,11 +136,15 @@ Sugestão: Importar os dashboards ID 15141 e 15758 que usaremos para visualizaç
 
 O acesso ao ArgoCD é realiza acessando a URL http://localhost:8080. Antes, precisamos expor a aplicação com o seguinte comando:
 
-`kubectl port-forward service/devops-argocd-server -n argo-cd 8080:443`
+```
+kubectl port-forward service/devops-argocd-server -n argo-cd 8080:443
+```
 
 Para acessar o ArgoCD, entre com o usuário ```admin``` e sua senha, que deve ser consultada executando o seguinte comando:
 
-`kubectl -n argo-cd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
+```
+kubectl -n argo-cd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
 
 # Aplicativo e Pipeline CI/CD
 
@@ -133,7 +165,8 @@ No seu repositório, acesse Settings >> Secrets and variables >> Actions. Cria a
 ### Configurar workflow no Actions
 Acesse o Actions e crie um novo workflow conforme o seguinte exemplo:
 
-```name: Docker Image CI
+```
+name: Docker Image CI
 
 on:
   push:
@@ -163,7 +196,8 @@ jobs:
     - name: Push Docker images
       run: |
         docker push janssenlima/projeto-devops:${{ steps.date.outputs.date }}
-        docker push janssenlima/projeto-devops:latest```
+        docker push janssenlima/projeto-devops:latest
+```
 
 
 
