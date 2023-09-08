@@ -68,7 +68,7 @@ Com o cluster em execução, podemos aplicar o deploy das stacks.
 
 Para garantir o funcionamento do ansible para este laboratório, podemos executar os seguintes comandos:
 
-`absible-inventory --list -y`
+`ansible-inventory --list -y`
 
 Este comando irá retornar com o host ```devops```, que está configurado no arquivo ```dev``` dentro do diretório ```ansible```.
 
