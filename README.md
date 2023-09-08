@@ -132,7 +132,7 @@ kubectl --namespace monitoring port-forward $POD_NAME 3000
 
 Para esse ambiente de laboratório, o Grafana está habilitado para fazer login automaticamente sem a necessidade de entrar com usuário e senha. Também já configura os datasources para Prometheus e Loki.
 
-Sugestão: Importar os dashboards ID 15141 e 15758 que usaremos para visualização das métricas e dos logs que serão gerados pelo App Python.
+Sugestão: Importar os dashboards **ID 15141 e 15758** que usaremos para visualização das métricas e dos logs que serão gerados pelo App Python.
 
 O acesso ao ArgoCD é realiza acessando a URL http://localhost:8080. Antes, precisamos expor a aplicação com o seguinte comando:
 
@@ -232,6 +232,8 @@ Preencha as informações solicitadas marcadas conforme as imagens a seguir.
 
 ![alt tag](img/new-app-1.png)
 
+**Obs.:** em Application Name usei devops-logs devido a construção do helmchart que utiliza o release-name no templaate do deployment.
+
 ![alt tag](img/new-app-2.png)
 
 ![alt tag](img/new-app-3.png)
@@ -247,7 +249,7 @@ Isso acontece porque deixamos o scincronismo manualmente. Clique em ```SYNC``` e
 ![alt tag](img/status-app-ok.png)
 
 
-Com tudo validado, você pode habilitar a sincronização automática do repositório e fazer alguma alteração no repo com o código-fonte da aplicação Python para gerar uma nova imagem. Anote a tag com o timestamp gerado e muda essa tag no reposiório projeto-devops no chart da aplicação. Automaticamente o ArgoCD vai sincronizar o repositório e fazer o rollout com a nova versão da imagem da aplicação.
+Com tudo validado, você pode habilitar a sincronização automática do repositório e fazer alguma alteração no repositório com o código-fonte da aplicação Python para gerar uma nova imagem. Anote a tag com o timestamp gerado e mude essa tag no reposiório projeto-devops no chart da aplicação (arquivo ```values.yaml``` dentro do diretório infra-app-python). Automaticamente o ArgoCD vai sincronizar o repositório e fazer o rollout com a nova versão da imagem da aplicação.
 
 # Imagens do Grafana com os logs e métricas da aplicação
 
